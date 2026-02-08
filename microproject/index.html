@@ -1,1 +1,337 @@
 
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>MP-LOOPS (Basics Only) Student App + Evidence JSON</title>
+  <style>
+    :root { --bg:#0b1220; --card:#121a2b; --ink:#e7eefc; --muted:#a9b5d1; --accent:#4f8cff; --ok:#91ffcf; --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Courier New", monospace; }
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui, -apple-system, Segoe UI, Roboto, Arial; padding:24px}
+    .wrap{max-width:980px;margin:0 auto}
+    .card{background:var(--card);border-radius:14px;padding:20px;box-shadow:0 10px 24px rgba(0,0,0,.35), inset 0 1px 0 rgba(255,255,255,.03); margin-bottom:18px}
+    h1{margin:0 0 8px;font-size:24px}
+    .sub{color:var(--muted);margin-bottom:16px}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+    label{display:block;font-size:12px;color:var(--muted);margin-bottom:6px}
+    input[type="text"],input[type="date"]{width:100%;padding:12px 14px;border-radius:12px;border:1px solid #24314d;background:#0e1627;color:var(--ink);outline:none}
+    input[type="text"]:focus,input[type="date"]:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(79,140,255,.2)}
+    .btn{display:inline-block;background:#0f1730;border:1px solid #223155;color:var(--ink);padding:10px 14px;border-radius:12px;text-decoration:none;cursor:pointer}
+    .btn.primary{background:linear-gradient(135deg, var(--accent), #7aa6ff);color:#0b1220;border-color:transparent;font-weight:600}
+    .row{margin:14px 0}
+    .preview{font-family:var(--mono);background:#0a1020;border:1px solid #1c2744;color:var(--ok);padding:12px;border-radius:12px;white-space:pre-wrap}
+    .links{display:flex;gap:10px;flex-wrap:wrap}
+    .section{margin-top:6px;color:#bcd2ff}
+    ul{margin:8px 0 8px 18px}
+    code{font-family:var(--mono);background:#0a1020;border:1px solid #1c2744;padding:2px 6px;border-radius:8px}
+    .small{font-size:13px}
+    .files{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .hint{color:#d7e3ff;font-size:12px;margin-top:6px}
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="card">
+    <h1>MP-LOOPS Student App — <span style="color:#bcd2ff">Basics Only</span></h1>
+    <div class="sub">
+      Module 3 focus: <b>for, while, range, break, continue, pass, if/elif/else</b> only.  
+      No functions, no lists, no imports, no libraries. This app personalizes a <code>broken_main.py</code>
+      plus <code>tests.txt</code> and <code>instructions.txt</code>. Then you can build a signed <code>evidence.json</code> from your files.
+    </div>
+
+    <div class="grid">
+      <div><label>Full name</label><input id="name" type="text" placeholder="e.g., John Ali"></div>
+      <div><label>Student ID</label><input id="sid" type="text" placeholder="e.g., A01234567"></div>
+      <div><label>SET (e.g., G, H, J)</label><input id="set" type="text" placeholder="e.g., G"></div>
+      <div><label>Today's date (YYYY-MM-DD)</label><input id="date" type="text"></div>
+    </div>
+
+    <div class="row"><a class="btn primary" id="gen">Generate broken_main.py / tests.txt / instructions.txt</a></div>
+
+    <div class="row">
+      <div class="section">Header preview</div>
+      <div class="preview" id="headerPrev">Fill fields and click "Generate".</div>
+    </div>
+
+    <div class="row links">
+      <a class="btn" id="dlBroken" download="">Download broken_main.py</a>
+      <a class="btn" id="dlTests" download="">Download tests.txt</a>
+      <a class="btn" id="dlInstr" download="">Download instructions.txt</a>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 style="margin:0 0 8px;">Evidence Builder — Updated Logbook + JSON</h2>
+    <div class="sub">Upload your updated files and click <b>Create evidence.json</b>. The JSON includes header + token and SHA-256 hashes of each file (no file contents).</div>
+
+    <div class="files">
+      <div>
+        <label>Updated logbook (XLS/XLSX/CSV)</label>
+        <input id="f_logbook" type="file" accept=".xls,.xlsx,.csv">
+      </div>
+      <div>
+        <label>main.py (your fixed program)</label>
+        <input id="f_main" type="file" accept=".py">
+      </div>
+      <div>
+        <label>reflection.txt</label>
+        <input id="f_reflect" type="file" accept=".txt">
+      </div>
+      <div>
+        <label>screenshot.png</label>
+        <input id="f_shot" type="file" accept=".png">
+      </div>
+      <div>
+        <label>tests.txt (your final tests)</label>
+        <input id="f_tests" type="file" accept=".txt">
+      </div>
+    </div>
+
+    <div class="row">
+      <a class="btn primary" id="makeJson">Create evidence.json</a>
+    </div>
+
+    <div class="row">
+      <div class="section">Evidence JSON preview</div>
+      <div class="preview small" id="jsonPreview">No JSON yet.</div>
+      <div class="hint">Tip: The JSON captures filename, size, type, and <code>sha256</code> hash of each uploaded file, plus the header and timestamp.</div>
+    </div>
+
+    <div class="row links">
+      <a class="btn" id="dlJson" download="">Download evidence.json</a>
+    </div>
+  </div>
+
+  <div class="card small" style="color:#a9b5d1">
+    © 2025 · Prepared for Professor John Ali (zali39@bcit.ca)
+  </div>
+
+</div>
+
+<script>
+(function(){
+  const $ = id => document.getElementById(id);
+  const pad2 = n => n<10 ? "0"+n : ""+n;
+  const now = new Date();
+  $("date").value = `${now.getFullYear()}-${pad2(now.getMonth()+1)}-${pad2(now.getDate())}`;
+
+  function tokenFrom(idStr, dateStr){
+    const last4 = (idStr.match(/[0-9]/g) || []).slice(-4).join("");
+    const day = (dateStr.split("-")[2]||"").slice(-2);
+    return last4 && day ? last4 + day : "TOKEN";
+  }
+  function headerLine(name, sid, set, date){
+    return `NAME=<${name}>; ID=<${sid}>; SET=<${set}>; MP=LOOPS; DATE=<${date}>; TOKEN=<${tokenFrom(sid,date)}>`;
+  }
+
+  // ---------- Starter file generators ----------
+  function brokenPy(name,sid,set,date){
+    const token = tokenFrom(sid,date);
+    return `# MP-LOOPS — BASICS ONLY (BROKEN STARTER)
+# Allowed: for, while, range, break, continue, pass, if/elif/else
+# Not allowed: functions, imports, lists, dicts, sets, libraries.
+
+# ====== REQUIRED HEADER (print first) ======
+print("NAME=<${name}>; ID=<${sid}>; SET=<${set}>; MP=LOOPS; DATE=<${date}>; TOKEN=<${token}>")
+
+# ====== TASK 1: Evens 1..10 on ONE line ======
+# Expected:  'Evens: 2 4 6 8 10'
+print("Evens:", end=" ")
+# BUG: wrong pattern. Fix using range appropriately (no extra text).
+for i in range(1, 10):     # <- fix
+    if i % 2 == 0:
+        print(i, end=" ")
+print()
+
+# ====== TASK 2: Sum 1..n using while ======
+# For n = 5, print: 'Sum1..n: 15'
+n = 5
+total = 0
+i = 1
+while i <= n:
+    total = total + i
+    # BUG: missing progress update creates infinite loop
+    # i = i            # <- fix
+print("Sum1..n:", total)
+
+# ====== TASK 3: First multiple of 7 in [a..b] ======
+# For a=10, b=20 → Expected: 'First7: 14'; if none, print 'First7: None'
+a = 10
+b = 20
+print("First7:", end=" ")
+for x in range(a, b+1):
+    if x % 7 == 0:
+        # BUG: should print x then break
+        pass
+else:
+    # BUG: else should only run if we did NOT break
+    print("None")
+
+# ====== TASK 4: Countdown n..1 with for+range ======
+# For n=5 → Expected: 'Down: 5 4 3 2 1'
+n = 5
+print("Down:", end=" ")
+# BUG: wrong direction
+for t in range(1, n):
+    print(t, end=" ")
+print()
+
+# ====== TASK 5: Filter with continue (skip vowels) ======
+# Expected: 'NoVowels: P y t h n' (each separated by a space on one line)
+text = "Python"
+print("NoVowels:", end=" ")
+for ch in text:
+    if ch in "aeiouAEIOU":
+        # BUG: we intended to skip vowels
+        pass
+    print(ch, end=" ")
+print()
+
+# ====== TASK 6: Use 'pass' safely ======
+# Print numbers 1..5, but when number is 3, do nothing special (still print sequence)
+print("OneToFive:", end=" ")
+for k in range(1, 6):
+    if k == 3:
+        # placeholder
+        pass
+    print(k, end=" ")
+print()
+`;
+  }
+
+  function testsTxt(){
+    return `# tests.txt — Required checks (+ add 2 edge cases)
+
+# 1) Header (yours will differ by values)
+# NAME=<FULL>; ID=<ID>; SET=<SET>; MP=LOOPS; DATE=<YYYY-MM-DD>; TOKEN=<TOKEN>
+
+# 2) Task 1
+Evens: 2 4 6 8 10
+
+# 3) Task 2 (n=5)
+Sum1..n: 15
+
+# 4) Task 3 (a=10, b=20)
+First7: 14
+
+# 5) Task 4 (n=5)
+Down: 5 4 3 2 1
+
+# 6) Task 5
+NoVowels: P y t h n
+
+# 7) Task 6
+OneToFive: 1 2 3 4 5
+
+# Add at least two edge cases, e.g.:
+#  - Task3 with a=1, b=6  -> First7: None
+#  - Task4 with n=1       -> Down: 1
+`;
+  }
+
+  function instrTxt(){
+    return `instructions.txt — What to do (BASICS ONLY)
+
+Fix all bugs in broken_main.py BUT stay within these limits:
+- Allowed: for, while, range, break, continue, pass, if/elif/else
+- Not allowed: functions/def, imports, lists/dicts/sets, libraries
+
+Header rule (first line printed):
+NAME=<full_name>; ID=<student_id>; SET=<set>; MP=LOOPS; DATE=<YYYY-MM-DD>; TOKEN=<token>
+Token = last 4 digits of your ID + day(2-digit).
+
+Evidence ZIP must contain:
+- main.py
+- screenshot.png  (show ≥ 3 test runs)
+- reflection.txt  (what failed first, how you fixed it; next steps)
+- tests.txt
+
+Use the Evidence Builder to generate evidence.json with hashes for your files.
+`;
+  }
+
+  function dl(filename, content, mime="text/plain"){
+    const blob = new Blob([content], {type: mime});
+    const url = URL.createObjectURL(blob);
+    return {url, filename};
+  }
+
+  $("gen").addEventListener("click", function(){
+    const name = $("name").value.trim() || "STUDENT";
+    const sid  = $("sid").value.trim()  || "A01234567";
+    const set  = $("set").value.trim()  || "G";
+    const date = $("date").value.trim() || "2025-10-07";
+
+    $("headerPrev").textContent = headerLine(name, sid, set, date);
+
+    const broken = brokenPy(name, sid, set, date);
+    const tests  = testsTxt();
+    const instr  = instrTxt();
+
+    const b = dl("broken_main.py", broken);
+    const t = dl("tests.txt", tests);
+    const i = dl("instructions.txt", instr);
+
+    const linkB = $("dlBroken"); linkB.href = b.url; linkB.download = "broken_main.py";
+    const linkT = $("dlTests");  linkT.href = t.url; linkT.download = "tests.txt";
+    const linkI = $("dlInstr");  linkI.href = i.url; linkI.download = "instructions.txt";
+  });
+
+  // ---------- Evidence JSON builder ----------
+  async function sha256(file){
+    const buf = await file.arrayBuffer();
+    const hash = await crypto.subtle.digest("SHA-256", buf);
+    const arr = Array.from(new Uint8Array(hash));
+    return arr.map(b => b.toString(16).padStart(2, "0")).join("");
+  }
+
+  $("makeJson").addEventListener("click", async function(){
+    const name = $("name").value.trim();
+    const sid  = $("sid").value.trim();
+    const set  = $("set").value.trim();
+    const date = $("date").value.trim();
+    const header = headerLine(name, sid, set, date);
+
+    const files = [
+      {label:"logbook",   input:$("f_logbook").files[0]},
+      {label:"main_py",   input:$("f_main").files[0]},
+      {label:"reflection",input:$("f_reflect").files[0]},
+      {label:"screenshot",input:$("f_shot").files[0]},
+      {label:"tests",     input:$("f_tests").files[0]},
+    ].filter(x => x.input);
+
+    const payload = {
+      header,
+      summary: {
+        name, sid, set, date,
+        token: tokenFrom(sid, date),
+        generated_at_utc: new Date().toISOString()
+      },
+      files: []
+    };
+
+    for (const f of files){
+      const file = f.input;
+      const hash = await sha256(file);
+      payload.files.push({
+        role: f.label,
+        filename: file.name,
+        size_bytes: file.size,
+        type: file.type || "application/octet-stream",
+        sha256: hash
+      });
+    }
+
+    const jsonStr = JSON.stringify(payload, null, 2);
+    $("jsonPreview").textContent = jsonStr;
+
+    const res = dl("evidence.json", jsonStr, "application/json");
+    const link = $("dlJson"); link.href = res.url; link.download = "evidence.json";
+  });
+
+})();
+</script>
+</body>
+</html>
