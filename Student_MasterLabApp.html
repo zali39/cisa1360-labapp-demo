@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>BCIT — Student Master Lab App (Modules 1 & 2)</title>
+<style>
+  body { font-family: Arial, sans-serif; margin: 20px; background:#f7f9fc; }
+  h1 { color:#0b3a6e; margin:0; } h2 { margin:4px 0 12px; color:#1c4c88; }
+  .panel { background:#eef4ff; border:1px solid #c8dafc; padding:12px; border-radius:10px; margin-bottom:14px; }
+  .pill { background:#0b3a6e; color:#fff; padding:2px 8px; border-radius:999px; font-size:12px; margin-left:6px; }
+  textarea { width:100%; height:140px; font-family: monospace; margin-top:6px; }
+  button { background:#0b3a6e; color:#fff; border:none; border-radius:8px; padding:8px 14px; cursor:pointer; margin-top:8px; }
+  button:hover { background:#155db3; }
+  .hidden { display:none; }
+  .hint { background:#fff; border-left:4px solid #c8dafc; padding:8px; margin-top:6px; }
+  .muted { color:#666; font-size:12px; }
+</style>
+</head>
+<body>
+<h1>BCIT — CISA 1360 Python Essentials (Fall 2025)</h1>
+<h2>Student Master Lab App <span class="pill">Offline</span> <span class="pill">No Copy/Paste</span></h2>
+
+<div id="unlock" class="panel">
+  <b>Instructor Unlock</b><br>
+  <label>Student Name: <input id="sname" type="text" placeholder="First Last" style="width:180px"></label>
+  <label style="margin-left:10px">Student ID: <input id="sid" type="text" placeholder="A00xxxxxx" style="width:140px"></label><br>
+  <label>Module #: <input id="mod" type="number" min="1" max="10" style="width:70px"></label>
+  <label style="margin-left:10px">Pages: <input id="pages" type="text" placeholder="42–82" style="width:120px"></label>
+  <label style="margin-left:10px">Secret Code: <input id="secret" style="width:120px">
+  <label style="margin-left:10px">Attendance Phrase (in-class): <input id="att" type="text" placeholder="given mid-class" style="width:160px"></label> type="password" style="width:120px"></label>
+  <button onclick="unlock()">Unlock</button>
+  <div class="muted">Instructor gives today's secret in class. Required to open labs. Your name/ID are embedded in filenames and metadata and checked by the Instructor App.</div>
+</div>
+
+<div id="work" class="hidden">
+  <h3 id="hdr"></h3>
+  <div id="labs"></div>
+  <h3>Logbook Reflection (Required)</h3>
+  <div class="hint">Prompt: What did you do today? What did you learn? Any challenges?</div>
+  <textarea id="logbook" placeholder="Type your reflection here..."></textarea>
+  <div class="muted">Copy, paste, cut, drag and drop are disabled — please type.</div>
+  <div class="panel"><b>Attendance Phrase (given mid-class):</b> <input id="att2" type="text" placeholder="enter phrase here" style="width:240px"> <span class="muted">If your instructor announced a phrase, enter it before exporting.</span></div>
+
+  <details class="panel" style="margin-top:10px">
+    <summary><b>Guidelines & Rubric (Read before starting)</b></summary>
+    <div class="hint"><b>How to use this app</b>
+      <ol>
+        <li>Enter your <b>Name</b>, <b>Student ID</b>, <b>Module</b>, <b>Pages</b>, and the class <b>Secret</b>, then click <b>Unlock</b>.</li>
+        <li><b>Typing only:</b> Copy, paste, cut, drag and drop are disabled. Type your own code.</li>
+        <li>Work in pairs for discussion, but <b>each student must type and export their own evidence</b>.</li>
+        <li>Complete all labs shown for the unlocked module.</li>
+        <li>Write your <b>Logbook Reflection</b> (required).</li>
+        <li>Click <b>Export All Evidence</b>. Downloaded files include: <code>{ID}_main_moduleX.py</code>, <code>{ID}_labX_*.txt</code>, <code>{ID}_raw_log_moduleX.txt</code>, <code>{ID}_logbook_moduleX.txt</code>.</li>
+        <li>Zip these files and upload to D2L before the deadline.</li>
+        <li><b>No tokens are needed</b> for labs (tokens are for micro-projects).</li>
+      </ol>
+    </div>
+    <div class="hint"><b>Scoring Rubric (10 pts total)</b>
+      <ul>
+        <li><b>Logic (3)</b> — Correct approach; solves the problem.</li>
+        <li><b>Syntax (3)</b> — Runs without syntax errors; valid Python.</li>
+        <li><b>Completeness (4)</b> — All labs attempted; evidence exported.</li>
+      </ul>
+      <div class="muted">Logbook is required and reviewed.</div>
+    </div>
+    <div class="hint"><b>Penalties & Integrity</b>
+      <ul>
+        <li><b>D2L-only submission (no in-class export)</b>: <b>20% penalty</b>.</li>
+        <li><b>Missing logbook</b>: penalty may apply per course policy.</li>
+        <li><b>Duplicate or shared evidence across <i>different</i> pairs</b>: may result in 0 and report.</li>
+        <li>Only the <b>latest D2L submission</b> is graded.</li>
+      </ul>
+    </div>
+  </details>
+
+  <button onclick="exportAll()">Export All Evidence</button>
+  <span id="msg"></span>
+</div>
+
+<script>
+['copy','paste','cut','drop','dragover','dragenter','contextmenu'].forEach(evt=>{
+  document.addEventListener(evt, e=>{ e.preventDefault(); }, true);
+});
+
+const DB = {
+  1: [
+    {t:"Lab 1.1 — Hello World", p:"Write a program that prints 'Hello, World!'", h:"Use print('Hello, World!')"},
+    {t:"Lab 1.2 — Arithmetic", p:"Perform and print 2+3, 5*6, 10/2", h:"Use +, *, / operators"}
+  ],
+  2: [
+    {t:"Lab 2.1 — Print Variations", p:"Use print with newline, tab and quotes", h:"Try \\n, \\t, and \\\""},
+    {t:"Lab 2.2 — Data Types", p:"Declare int, float, str; print type()", h:"Use type()"},
+    {t:"Lab 2.3 — Arithmetic with Variables", p:"Store numbers in variables and operate", h:"Assign x=5, y=10"},
+    {t:"Lab 2.4 — Temperature Converter", p:"Convert Celsius to Fahrenheit", h:"F = C*9/5 + 32"},
+    {t:"Lab 2.5 — String Operations", p:"Slice and concatenate strings", h:"Use s[0:3] and +"},
+    {t:"Lab 2.6 — Profile Card", p:"Collect name, ID, GPA and print formatted", h:"Use f-strings"}
+  ]
+};
+
+let g = {name:"", id:"", mod:null, pages:"", secret:""};
+
+function unlock(){
+  g.name = (document.getElementById('sname').value||"").trim();
+  g.id   = (document.getElementById('sid').value||"").trim();
+  g.mod  = parseInt(document.getElementById('mod').value||"0",10);
+  g.pages= (document.getElementById('pages').value||"").trim();
+  g.secret=(document.getElementById('secret').value||"").trim();
+  if(!g.mod || !DB[g.mod]){ alert("This build includes Modules 1 & 2 only."); return; }
+  if(!g.secret){ alert("Secret code is required."); return; }
+  if(!g.id){ alert("Student ID is required for export filenames."); return; }
+  document.getElementById('unlock').classList.add('hidden');
+  document.getElementById('work').classList.remove('hidden');
+  document.getElementById('hdr').innerText = "Module " + g.mod + " Labs (pp. " + g.pages + ") — " + g.name + " ("+g.id+")";
+  const host = document.getElementById('labs'); host.innerHTML = "";
+  DB[g.mod].forEach((L,i)=>{
+    host.innerHTML += '<div class="panel"><b>'+L.t+'</b><div class="hint"><b>Problem:</b> '+L.p+'<br><b>Hint:</b> '+L.h+'</div><textarea id="lab'+i+'" placeholder="Type your code for '+L.t+' here..."></textarea></div>';
+  });
+}
+
+function ts(){ return new Date().toISOString(); }
+
+function metaHeader(){
+  const attend = (document.getElementById('att')||{value:''}).value||'';
+  return "# STUDENT_NAME: "+g.name+"\n# STUDENT_ID: "+g.id+"\n# MODULE: "+g.mod+"\n# PAGES: "+g.pages+"\n# SECRET: "+g.secret+"\n# ATTEND: "+attend+"\n# EXPORTED: "+ts()+"\n\n";
+}
+
+function exportAll(){
+  if(!g.mod){ alert("Unlock module first."); return; }
+  const lb = (document.getElementById('logbook').value||"").trim();
+  if(!lb){ alert("Logbook reflection is required."); return; }
+  const meta = metaHeader();
+  let combined = meta;
+  let raw = "Raw typing snapshot\n"+meta;
+  let count = 0;
+
+  (DB[g.mod]||[]).forEach((L,i)=>{
+    const code = (document.getElementById('lab'+i).value||"").replace(/\r/g,"");
+    combined += "# "+L.t+"\n"+code+"\n\n";
+    raw += "["+L.t+"] "+ts()+"\n"+code+"\n\n";
+    saveText(g.id + '_lab'+g.mod+'_'+(i+1)+'.txt', "## "+L.t+"\n"+meta+code+"\n");
+    count++;
+  });
+  saveText(g.id + '_main_module'+g.mod+'.py', combined);
+  saveText(g.id + '_raw_log_module'+g.mod+'.txt', raw);
+  saveText(g.id + '_logbook_module'+g.mod+'.txt', "## Logbook\n"+meta+lb+"\n");
+  document.getElementById('msg').innerText = "Exported "+(count+3)+" files. Zip them before uploading to D2L.";
+}
+
+function saveText(name, content){
+  const blob = new Blob([content], {type:"text/plain"});
+  const a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name; a.click();
+}
+</script>
+</body>
+</html>
