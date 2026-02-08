@@ -1,1 +1,209 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<title>Student — Module 1 (Option A, Multi-Code)</title>
+<style>
+body{font-family:Arial,Helvetica,sans-serif;margin:24px;max-width:1100px}
+.card{border:1px solid #ccc;border-radius:12px;padding:16px;margin:16px 0}
+.labcard{border:1px solid #bbb;border-radius:12px;padding:16px;margin:16px 0}
+.subcard{border:1px dashed #bbb;border-radius:10px;padding:12px;margin-top:12px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+label{display:block;margin-top:8px}
+textarea{width:100%;height:200px;font-family:Consolas,monospace}
+button{padding:8px 14px;margin-top:8px}
+small{color:#666}
+.pass{color:green} .fail{color:#b00020}
+</style></head><body>
+<script>
+const SECRET_LIST = ['SEC-WK01-M1', 'BK-SEC-M01-AM', 'MASTER-M01-OVERRIDE'];
+const ATT_LIST    = ['ATT-WK01-1030A', 'BK-ATT-M01-MID', 'MASTER-M01-ATT'];
+</script>
 
+<h2>Module 1 — Student App (Option A)</h2>
+<div class="card"><b>Flow:</b> 1) Session Secret → unlock labs → 2) Work → 3) Attendance mid-session → 4) Generate JSON.</div>
+
+<div class="card"><h3>1) Identify</h3><div class="grid">
+  <div>
+    <label>Name</label><input id="name" type="text" placeholder="Your Name">
+    <label>Student ID</label><input id="sid" type="text" placeholder="A00...">
+    <label>Section/Set</label><input id="set" type="text" placeholder="e.g., Set G">
+  </div>
+  <div>
+    <label>Session Secret</label><input id="sec" type="text" placeholder="Enter code to unlock">
+    <button onclick="verifySecret()">Unlock Labs</button>
+    <p id="secMsg"></p>
+  </div>
+</div></div>
+
+<div class="card"><h3>2) Attendance (mid-session)</h3>
+  <label>Attendance Code</label><input id="att" type="text" placeholder="Provided mid-session">
+  <button onclick="checkAttendance()">Save Attendance</button>
+  <p id="attMsg"></p>
+</div>
+
+<div class="card"><h3>3) Timestamp Header</h3>
+  <button onclick="generateHeader()">Generate Header</button>
+  <button onclick="copyHeader()">Copy</button>
+  <textarea id="headerBox" readonly placeholder="Generated header will appear here..."></textarea>
+  <label>Paste header text here (recorded in JSON):</label>
+  <textarea id="headerCopy" placeholder="Paste header text here"></textarea>
+</div>
+
+<div id="labsGate" class="card" style="display:none">
+  <h3>4) Book Labs — choose ANY TWO</h3>
+  
+<div class='labcard'>
+  <div class='labhead'><label><input type='checkbox' id='B1_1_done'> I am submitting this lab</label></div>
+  <h3>PE1 Lab 1 — Intro & Printing</h3>
+  <div class='subcard'><h4>Hints</h4><ul><li>Validate inputs</li><li>Use clear logic</li><li>Match output spec</li></ul></div>
+  <div class='subcard'><h4>Editor (No Copy/Paste)</h4>
+    <button onclick="insertHeader('B1_1')">Insert Header</button>
+    <textarea id="B1_1_editor" placeholder="# Type here..." onpaste="(event.preventDefault())" oncontextmenu="return false;" spellcheck="false"></textarea>
+  </div>
+</div>
+
+<div class='labcard'>
+  <div class='labhead'><label><input type='checkbox' id='B1_2_done'> I am submitting this lab</label></div>
+  <h3>PE1 Lab 2 — Variables & Input</h3>
+  <div class='subcard'><h4>Hints</h4><ul><li>Validate inputs</li><li>Use clear logic</li><li>Match output spec</li></ul></div>
+  <div class='subcard'><h4>Editor (No Copy/Paste)</h4>
+    <button onclick="insertHeader('B1_2')">Insert Header</button>
+    <textarea id="B1_2_editor" placeholder="# Type here..." onpaste="(event.preventDefault())" oncontextmenu="return false;" spellcheck="false"></textarea>
+  </div>
+</div>
+
+<div class='labcard'>
+  <div class='labhead'><label><input type='checkbox' id='B1_3_done'> I am submitting this lab</label></div>
+  <h3>PE1 Lab 3 — Simple Math</h3>
+  <div class='subcard'><h4>Hints</h4><ul><li>Validate inputs</li><li>Use clear logic</li><li>Match output spec</li></ul></div>
+  <div class='subcard'><h4>Editor (No Copy/Paste)</h4>
+    <button onclick="insertHeader('B1_3')">Insert Header</button>
+    <textarea id="B1_3_editor" placeholder="# Type here..." onpaste="(event.preventDefault())" oncontextmenu="return false;" spellcheck="false"></textarea>
+  </div>
+</div>
+  <h3>5) Course Labs — choose ANY TWO</h3>
+  
+<div class='labcard'>
+  <div class='labhead'><label><input type='checkbox' id='L1_1_done'> I am submitting this lab</label></div>
+  <h3>Lab 1.1 — Setup & Hello</h3>
+  <div class='subcard'><h4>Hints</h4><ul><li>Validate inputs</li><li>Use clear logic</li><li>Match output spec</li></ul></div>
+  <div class='subcard'><h4>Editor (No Copy/Paste)</h4>
+    <button onclick="insertHeader('L1_1')">Insert Header</button>
+    <textarea id="L1_1_editor" placeholder="# Type here..." onpaste="(event.preventDefault())" oncontextmenu="return false;" spellcheck="false"></textarea>
+  </div>
+</div>
+
+<div class='labcard'>
+  <div class='labhead'><label><input type='checkbox' id='L1_2_done'> I am submitting this lab</label></div>
+  <h3>Lab 1.2 — Print & Time</h3>
+  <div class='subcard'><h4>Hints</h4><ul><li>Validate inputs</li><li>Use clear logic</li><li>Match output spec</li></ul></div>
+  <div class='subcard'><h4>Editor (No Copy/Paste)</h4>
+    <button onclick="insertHeader('L1_2')">Insert Header</button>
+    <textarea id="L1_2_editor" placeholder="# Type here..." onpaste="(event.preventDefault())" oncontextmenu="return false;" spellcheck="false"></textarea>
+  </div>
+</div>
+
+<div class='labcard'>
+  <div class='labhead'><label><input type='checkbox' id='L1_3_done'> I am submitting this lab</label></div>
+  <h3>Lab 1.3 — Simple Calc</h3>
+  <div class='subcard'><h4>Hints</h4><ul><li>Validate inputs</li><li>Use clear logic</li><li>Match output spec</li></ul></div>
+  <div class='subcard'><h4>Editor (No Copy/Paste)</h4>
+    <button onclick="insertHeader('L1_3')">Insert Header</button>
+    <textarea id="L1_3_editor" placeholder="# Type here..." onpaste="(event.preventDefault())" oncontextmenu="return false;" spellcheck="false"></textarea>
+  </div>
+</div>
+</div>
+
+<div class="card"><h3>6) Checklist (must be ✓)</h3>
+  <label><input type="checkbox" id="chk_header"> Timestamp header added</label>
+  <label><input type="checkbox" id="chk_comments"> Meaningful comments added</label>
+  <label><input type="checkbox" id="chk_choice"> Selected 2 Book + 2 Course labs</label>
+  <label><input type="checkbox" id="chk_modules"> Used only covered material</label>
+  <label><input type="checkbox" id="chk_run"> Ran code and verified outputs</label>
+  <p id="chkMsg"></p>
+</div>
+
+<div class="card"><h3>7) Self‑Assessment (0–2 each) & Peer (0–8)</h3>
+  <div class="grid">
+    <div>
+      <label>Comments</</label><input type="number" id="sa_comments" min="0" max="2" value="1" oninput="updateProvisional()">
+      <label>Input Validation</label><input type="number" id="sa_input" min="0" max="2" value="1" oninput="updateProvisional()">
+      <label>Decision Logic</label><input type="number" id="sa_logic" min="0" max="2" value="1" oninput="updateProvisional()">
+      <label>Output Format</label><input type="number" id="sa_output" min="0" max="2" value="1" oninput="updateProvisional()">
+      <p>Self subtotal: <span id="sa_sub">4</span> / 8</p>
+    </div>
+    <div>
+      <label>Peer Name</label><input id="peer_name" type="text">
+      <label>Peer ID</label><input id="peer_id" type="text">
+      <label>Peer Score (0–8)</label><input id="peer_score" type="number" min="0" max="8" value="0" oninput="updateProvisional()">
+      <label>Peer Note</label><input id="peer_note" type="text" placeholder="One-line feedback">
+      <p><b>Provisional labs mark (/15):</b> <span id="prov_mark">—</span></p>
+      <small>Auto 5 + Self ≤5 + Peer ≤5</small>
+    </div>
+  </div>
+</div>
+
+<div class="card"><h3>8) Evidence & JSON</h3>
+  <label>Reflection</label><input type="file" id="f_reflection" accept=".txt,.md">
+  <label>Screenshot</label><input type="file" id="f_screenshot" accept="image/*">
+  <label>Logbook</label><input type="file" id="f_logbook" accept=".xls,.xlsx,.csv">
+  <label>main.py</label><input type="file" id="f_main" accept=".py">
+  <button onclick="generateJSON()">Generate Evidence JSON</button>
+  <p id="jsonMsg"></p>
+</div>
+
+<script>
+function verifySecret(){ const sec=document.getElementById('sec').value.trim(); const m=document.getElementById('secMsg');
+  if(SECRET_LIST.includes(sec)){ m.textContent='✓ Secret verified. Labs unlocked.'; m.style.color='green'; document.getElementById('labsGate').style.display='block'; }
+  else{ m.textContent='Wrong secret. Try again.'; m.style.color='red'; } }
+function checkAttendance(){ const a=document.getElementById('att').value.trim(); const m=document.getElementById('attMsg');
+  if(ATT_LIST.includes(a)){ m.textContent='✓ Attendance saved.'; m.style.color='green'; } else{ m.textContent='Incorrect code.'; m.style.color='red'; } }
+function generateHeader(){
+  const n=document.getElementById('name').value||"<Your Name>";
+  const s=document.getElementById('sid').value||"<YourID>";
+  const set=document.getElementById('set').value||"<Set>";
+  const header=['# === CISA 1360 — Module 1 ===', '# Student: '+n+' ID: '+s+' Set: '+set,
+  'from datetime import datetime','__STUDENT_NAME__= "'+n+'"','__STUDENT_ID__= "'+s+'"','__SECTION__= "'+set+'"',
+  '__TIMESTAMP__=datetime.now().strftime("%Y-%m-%d %H:%M:%S")','print(__STUDENT_NAME__,__STUDENT_ID__,__SECTION__,__TIMESTAMP__)',''].join('\n');
+  document.getElementById('headerBox').value=header;
+}
+function copyHeader(){ const box=document.getElementById('headerBox'); box.select(); try{document.execCommand('copy');}catch(e){navigator.clipboard.writeText(box.value);} alert('Header copied.'); }
+function insertHeader(id){ const hb=document.getElementById('headerBox'); if(!hb.value) generateHeader(); const ed=document.getElementById(id+'_editor'); ed.value = hb.value + ed.value; }
+function selectedLabs(ids){ const out=[]; ids.forEach(p=>{ const cb=document.getElementById(p+'_done'); if(cb&&cb.checked) out.push(p); }); return out; }
+function checklistOK(){ const ids=['chk_header','chk_comments','chk_choice','chk_modules','chk_run']; const ok=ids.map(i=>document.getElementById(i).checked).every(Boolean); const m=document.getElementById('chkMsg');
+  m.textContent = ok ? '✓ Checklist complete.' : 'Checklist incomplete — tick all items.'; m.className= ok ? 'pass':'fail'; return ok; }
+function updateProvisional(){
+  const sa=['sa_comments','sa_input','sa_logic','sa_output'].map(id=>parseInt(document.getElementById(id).value||'0',10)).reduce((a,b)=>a+b,0);
+  document.getElementById('sa_sub').textContent = sa + ' / 8';
+  const peer=parseInt(document.getElementById('peer_score').value||'0',10);
+  const auto_ok=checklistOK() && selectedLabs(['B1_1','B1_2','B1_3']).length>=2 && selectedLabs(['L1_1','L1_2','L1_3']).length>=2;
+  const auto_pts = auto_ok ? 5 : 0;
+  const total = auto_pts + (sa/8)*5 + (peer/8)*5;
+  document.getElementById('prov_mark').textContent = total.toFixed(2) + ' / 15';
+  return {total: total, auto_pts: auto_pts, self_pts:(sa/8)*5, peer_pts:(peer/8)*5, sa: sa, peer: peer};
+}
+async function fileHash(file){ const buf=await file.arrayBuffer(); const hash=await crypto.subtle.digest('SHA-256',buf);
+  return Array.from(new Uint8Array(hash)).map(b=>b.toString(16).padStart(2,'0')).join(''); }
+async function generateJSON(){
+  if(!ATT_LIST.includes(document.getElementById('att').value.trim())){ alert('Enter Attendance Code first.'); return; }
+  if(!checklistOK()){ return; }
+  const name=document.getElementById('name').value.trim(); const sid=document.getElementById('sid').value.trim(); const set=document.getElementById('set').value.trim();
+  const headerCopy=document.getElementById('headerCopy').value.trim(); if(!name||!sid||!set||!headerCopy){ alert('Fill Name/ID/Set and paste header.'); return; }
+  const chosenBook = ['B1_1','B1_2','B1_3'].filter(id=>document.getElementById(id+'_done').checked).map(id=>document.querySelector('#'+id+'_done').closest('.labcard').querySelector('h3').textContent);
+  const chosenCourse = ['L1_1','L1_2','L1_3'].filter(id=>document.getElementById(id+'_done').checked).map(id=>document.querySelector('#'+id+'_done').closest('.labcard').querySelector('h3').textContent);
+  if(chosenBook.length<2 || chosenCourse.length<2){ alert('Pick at least TWO Book and TWO Course labs.'); return; }
+  const files=[['reflection','f_reflection'],['screenshot','f_screenshot'],['logbook','f_logbook'],['main_py','f_main']];
+  const artifacts={}; for(const [k,el] of files){ const i=document.getElementById(el); if(!i.files||!i.files[0]){alert('Missing '+k); return;} const f=i.files[0];
+    artifacts[k]={name:f.name,size:f.size,type:f.type,lastModified:f.lastModified,sha256:await fileHash(f)}; }
+  const prov=updateProvisional();
+  const manifest={course:'CISA 1360',module:1,topic:'Module 1',policy:'Option A (Secret + Attendance; multi-code)',
+    timestamp:new Date().toISOString(),student:{name:name,sid:sid,set:set},attendance_entered:document.getElementById('att').value.trim(),
+    session_secret_entered:document.getElementById('sec').value.trim(),header_text:headerCopy,chosenBook:chosenBook,chosenCourse:chosenCourse,artifacts:artifacts,
+    checklist:{header:document.getElementById('chk_header').checked,comments:document.getElementById('chk_comments').checked,choice:document.getElementById('chk_choice').checked,modules:document.getElementById('chk_modules').checked,run:document.getElementById('chk_run').checked},
+    self_assessment:{comments:parseInt(document.getElementById('sa_comments').value||'0',10),input:parseInt(document.getElementById('sa_input').value||'0',10),logic:parseInt(document.getElementById('sa_logic').value||'0',10),output:parseInt(document.getElementById('sa_output').value||'0',10)},
+    peer_assessment:{name:document.getElementById('peer_name').value.trim(),id:document.getElementById('peer_id').value.trim(),score:parseInt(document.getElementById('peer_score').value||'0',10),note:document.getElementById('peer_note').value.trim()},provisional_breakdown:prov};
+  const blob=new Blob([JSON.stringify(manifest,null,2)],{type:'application/json'}); const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob); a.download='evidence_manifest_mod01'+(sid?('_'+sid):'')+'.json'; a.click(); URL.revokeObjectURL(a.href);
+  document.getElementById('jsonMsg').textContent='✓ JSON manifest generated.';
+}
+</script>
+</body></html>
