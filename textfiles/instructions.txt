@@ -1,0 +1,17 @@
+instructions.txt — What to do
+
+Fix all bugs in broken_main.py BUT stay within these limits:
+- Allowed: for, while, range, break, continue, pass, if/elif/else
+- Not allowed: functions/def, imports, lists/dicts/sets, libraries
+
+Header rule (first line printed):
+NAME=<full_name>; ID=<student_id>; SET=<set>; MP=LOOPS; DATE=<YYYY-MM-DD>; TOKEN=<token>
+Token = last 4 digits of your ID + day(2-digit).
+
+Evidence ZIP must contain:
+- main.py
+- screenshot.png  (show ≥ 3 test runs)
+- reflection.txt
+- tests.txt
+
+Use the Evidence Builder to generate evidence.json with hashes and expected output lines for your seeded variant.
