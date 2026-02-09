@@ -14,6 +14,7 @@ cisa1360-labapp-demo/
 
 
 LabApp (labapp/)
+https://zali39.github.io/cisa1360-labapp-demo/
 ✅ https://zali39.github.io/cisa1360-labapp-demo/labapp/
 
 MicroProject (microproject/)
@@ -38,3 +39,24 @@ https://forms.office.com/r/JXnPEu71Tw
 ---------
 download from GitHub repo: Ctrl+Shift +s
 Copy path: Ctrl+Shift +.
+If it still shows the old LabApp:
+
+Windows: Ctrl + F5
+
+Mac: Cmd + Shift + R
+
+Or wait 1–2 minutes (Pages rebuild delay)
+------------
+main
+ https://zali39.github.io/cisa1360-labapp-demo/
+
+LabApp:
+✅ https://zali39.github.io/cisa1360-labapp-demo/labapp/
+
+MicroProject:
+✅ https://zali39.github.io/cisa1360-labapp-demo/microproject/
+
+Adaptive Quiz:
+✅ https://zali39.github.io/cisa1360-labapp-demo/adaptiveQuizes/
+
+(Also: qr/, evidence/, etc.)
