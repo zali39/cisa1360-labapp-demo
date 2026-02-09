@@ -1,0 +1,40 @@
+cisa1360-labapp-demo/
+├─ index.html                  (Landing page: buttons to both apps)
+├─ apps/
+│  ├─ lab/
+│  │  └─ index.html            (LabApp)
+│  └─ project/
+│     └─ index.html            (ProjectApp)
+├─ demo_evidence_pack.zip
+└─ assets/
+   ├─ qr_labapp.png
+   ├─ qr_projectapp.png
+   ├─ qr_pre_poll.png
+   └─ qr_post_poll.png
+
+
+LabApp (labapp/)
+✅ https://zali39.github.io/cisa1360-labapp-demo/labapp/
+
+MicroProject (microproject/)
+✅ https://zali39.github.io/cisa1360-labapp-demo/microproject/
+
+Adaptive Quizzes (adaptiveQuizes/)
+✅ https://zali39.github.io/cisa1360-labapp-demo/adaptiveQuizes/
+
+QR folder (qr/)
+✅ https://zali39.github.io/cisa1360-labapp-demo/qr/
+
+
+-------
+Form Links:
+pre-poll
+https://forms.office.com/r/VW9XUcxCbb
+post-poll
+https://forms.office.com/r/989EL5Mcyj
+Final-verdict
+https://forms.office.com/r/JXnPEu71Tw
+
+---------
+download from GitHub repo: Ctrl+Shift +s
+Copy path: Ctrl+Shift +.
